@@ -1,5 +1,6 @@
 // License: Apache 2.0. See LICENSE file in root directory.
 // Copyright(c) 2015-2017 Intel Corporation. All Rights Reserved.
+#include <iostream>             // for cout
 
 #include <librealsense2/rs.hpp> // Include RealSense Cross Platform API
 #include "example.hpp"          // Include short list of convenience functions for rendering
@@ -27,7 +28,9 @@ int main(int argc, char * argv[]) try
     rs2::pipeline pipe;
     // Start streaming with default recommended configuration
     pipe.start();
-
+    
+    int a=0;
+	    
     while (app) // Application still alive?
     {
         // Wait for the next set of frames from the camera
@@ -43,9 +46,17 @@ int main(int argc, char * argv[]) try
         pc.map_to(color);
 
         auto depth = frames.get_depth_frame();
-
         // Generate the pointcloud and texture mappings
         points = pc.calculate(depth);
+        auto vertices = points.get_vertices();   
+        
+        if(a<1){
+	        for (std::size_t i = 0; i < points.size (); ++i){
+				std::cout << "    " << vertices[i].x << " " << vertices[i].y << " " << vertices[i].z << std::endl;
+				a++;
+			}
+		}
+
 
         // Upload the color frame to OpenGL
         app_state.tex.upload(color);
